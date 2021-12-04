@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"html"
 	"log"
 	"strconv"
@@ -138,7 +137,7 @@ func StoreUserAccount(username string, password string, email string, salt strin
 
 	id, _ := ret.LastInsertId()
 
-	fmt.Printf("用户%d创建", id)
-	//log.Print(strconv.FormatInt(id, 10) + "被创建")
+	//fmt.Printf("用户%d创建", id)
+	log.Print(strconv.FormatInt(id, 10) + "被创建")
 	return nil
 }

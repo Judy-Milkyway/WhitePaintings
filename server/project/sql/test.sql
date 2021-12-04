@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS `users`(
+    `userid` INT UNSIGNED AUTO_INCREMENT,
+    `username` VARCHAR(20) NOT NULL,
+    `email` VARCHAR(32) NOT NULL,
+    `salt` BINARY(4) NOT NULL,
+    `password` BINARY(32) NOT NULL,
+    PRIMARY KEY (`userid`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
