@@ -20,24 +20,25 @@ import (
 //初始化数据库
 var db *sql.DB
 
-func InitDB() {
-	err := new(error)
+func InitDB() error {
+	var err error
 	dsn := "root" + ":" + "MysqlTest" + "@tcp(127.0.0.1:3306)/test"
 
-	db, *err = sql.Open("mysql", dsn)
+	db, err = sql.Open("mysql", dsn)
 	if err != nil {
-		log.Panic(err)
-		panic(err)
+		log.Print(err)
+		return err
 	} else {
 		//检测是否连接成功
 		err := db.Ping()
 		if err != nil {
-			log.Panic(err)
-			panic(err)
+			log.Print(err)
+			return err
 		}
 		db.SetMaxOpenConns(10)
 		fmt.Print("连接成功\n")
 	}
+	return nil
 }
 
 func Register(c *gin.Context) {
@@ -50,7 +51,16 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-	var nullSHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+	//检测用户名长度
+	if len(username) < 6 || len(username) > 32 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": "307",
+			"msg":  "用户名过短或过长",
+		})
+		return
+	}
+
+	var nullSHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" //需要修改
 	//获取密码
 	password, exist := c.GetPostForm("password")
 	if !exist || password == nullSHA256 {
@@ -80,9 +90,9 @@ func Register(c *gin.Context) {
 		return
 	}
 	username = html.EscapeString(username)
-	DBemail := QueryEmail(email)
+	DBemail := QueryEmailIsExist(email)
 
-	if DBemail != "" {
+	if DBemail {
 		c.JSON(http.StatusOK, gin.H{
 			"code": "231",
 			"msg":  "邮箱已被注册",
@@ -90,8 +100,8 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	DBuser := QueryEmail(username)
-	if DBuser != "" {
+	DBuser := QueryUsernameIsExist(username)
+	if DBuser {
 		c.JSON(http.StatusOK, gin.H{
 			"code": "230",
 			"msg":  "用户名已被注册",
@@ -108,11 +118,19 @@ func Register(c *gin.Context) {
 		log.Print(err)
 		return
 	}
+
+	//返回token
+	token := "还没做完"
+	c.JSON(http.StatusOK, gin.H{
+		"code":  "200",
+		"msg":   "注册成功",
+		"token": token,
+	})
 }
 
 //邮箱正则匹配
 func VerifyEmailFormat(email string) bool {
-	pattern := `\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*` //匹配电子邮箱
+	pattern := `^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$` //匹配电子邮箱
 	reg := regexp.MustCompile(pattern)
 	return reg.MatchString(email)
 }
@@ -221,9 +239,16 @@ func ChangePasswd(c *gin.Context) {
 
 //添加用户数据
 func AddUser(username string, password string, email string) error {
+	salt := SaltDefault()
+	enc := Encrypt(password, hex.EncodeToString(salt))
+	encHex, err := hex.DecodeString(enc)
+	if err != nil {
+		log.Print(err)
+		return err
+	}
 
-	sqlstr := `insert into users(username,email,salt,password) value(?,?,?,?) `
-	_, err := db.Exec(sqlstr, username, email, password, SaltDefault())
+	sqlstr := `insert into users(username,email,salt,password) values(?,?,?,?)`
+	_, err = db.Exec(sqlstr, username, email, salt, encHex)
 	if err != nil {
 		log.Print(err)
 		return err

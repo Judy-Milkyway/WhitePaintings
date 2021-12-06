@@ -6,8 +6,8 @@ import "log"
 func QueryEmail(username string) string {
 	var email string
 	sqlstr := `select email from users where username=?`
-	result := db.QueryRow(sqlstr)
-	err := result.Scan(email)
+	result := db.QueryRow(sqlstr, username)
+	err := result.Scan(&email)
 	if err != nil {
 		log.Print(err)
 		return ""
@@ -20,12 +20,48 @@ func QueryUsername(email string) string {
 	var username string
 	sqlstr := `select username from users where email=?`
 	result := db.QueryRow(sqlstr, email)
-	err := result.Scan(username)
+	err := result.Scan(&username)
 	if err != nil {
 		log.Print(err)
 		return ""
 	}
 	return username
+}
+
+//有可能有逻辑问题
+func QueryUsernameIsExist(username string) bool {
+	var usernameSearch string
+	sqlstr := `select username from users where username=?`
+	result := db.QueryRow(sqlstr, username)
+	err := result.Scan(&usernameSearch)
+	if usernameSearch == "" {
+		return false
+	}
+
+	if err != nil {
+		log.Print(err)
+		return true
+	}
+
+	return true
+}
+
+//有可能有逻辑问题
+func QueryEmailIsExist(email string) bool {
+	var usernameSearch string
+	sqlstr := `select email from users where email=?`
+	result := db.QueryRow(sqlstr, email)
+	err := result.Scan(&usernameSearch)
+	if usernameSearch == "" {
+		return false
+	}
+
+	if err != nil {
+		log.Print(err)
+		return true
+	}
+
+	return true
 }
 
 //从数据库查询密码
