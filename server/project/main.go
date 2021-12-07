@@ -22,6 +22,7 @@ func main() {
 
 	passportPage.POST("/login", passportv2.Login)
 	passportPage.POST("/register", passportv2.Register)
+	passportPage.DELETE("/login", passportv2.ExitLogin)
 	//
 
 	//运行数据库
