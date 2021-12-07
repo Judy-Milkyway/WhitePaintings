@@ -259,8 +259,8 @@ func Login(c *gin.Context) {
 	token, err := NewUserSession(id)
 	if err != redis.ErrNil {
 		c.JSON(http.StatusOK, gin.H{
-			"code": "501",
-			"msg":  "操作超时",
+			"code": "500",
+			"msg":  "未知错误",
 		})
 		return
 	}
@@ -271,6 +271,34 @@ func Login(c *gin.Context) {
 		"msg":   "登录成功",
 		"token": token,
 	})
+}
+
+func CheckLogin(c *gin.Context) {
+	cookiRequset := c.Request.Cookies()
+	for i := 0; i < len(cookiRequset); i++ {
+		item := cookiRequset[i]
+		//
+		isLogged, err := VerifyUserSession(item.Value)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": "500",
+				"msg":  "未知错误",
+			})
+			return
+		}
+		if isLogged {
+			ExpireSession(item.Value)
+			c.JSON(http.StatusOK, gin.H{
+				"code": "200",
+				"msg":  "已登录",
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"code": "201",
+			"msg":  "未登录",
+		})
+	}
 }
 
 func ExitLogin(c *gin.Context) {
