@@ -44,6 +44,8 @@ require (
 )
 
 require (
+	github.com/garyburd/redigo v1.6.3
 	github.com/mattn/go-sqlite3 v1.14.9 // indirect
+	github.com/typa01/go-utils v0.0.0-20181126045345-a86b05b01c1e
 	gorm.io/driver/mysql v1.2.1
 )

@@ -51,3 +51,16 @@ func ResetSessionTime(session string) error {
 	}
 	return err
 }
+
+//暂时的方案
+func ExpireSession(session string) error {
+
+	c := DialRedis()
+	defer c.Close()
+	n, err := c.Do("EXPIRE", session, 0.01)
+	if n == int64(1) {
+		fmt.Print("success")
+		return nil
+	}
+	return err
+}

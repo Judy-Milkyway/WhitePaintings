@@ -77,6 +77,32 @@ func QueryPasswd(username string) []byte {
 	return []byte(passwd)
 }
 
+//通过邮箱查询用户id
+func QueryIdByEmail(email string) string {
+	var id string
+	sqlstr := `select user_id from users where email=?`
+	result := db.QueryRow(sqlstr, email)
+	err := result.Scan(&id)
+	if err != nil {
+		log.Print(err)
+		return ""
+	}
+	return id
+}
+
+//通过用户名查询用户id
+func QueryIdByUsername(username string) string {
+	var id string
+	sqlstr := `select user_id from users where email=?`
+	result := db.QueryRow(sqlstr, username)
+	err := result.Scan(&id)
+	if err != nil {
+		log.Print(err)
+		return ""
+	}
+	return id
+}
+
 //从数据库查询盐
 func QuerySalt(username string) []byte {
 	var salt []byte

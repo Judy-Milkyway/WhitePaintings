@@ -9,15 +9,18 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"time"
 
+	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
+
 	//"github.com/mojocn/base64Captcha"
 	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-//初始化数据库
+//初始化sql数据库
 var db *sql.DB
 
 func InitDB() error {
@@ -39,6 +42,21 @@ func InitDB() error {
 		fmt.Print("连接成功\n")
 	}
 	return nil
+}
+
+//连接redis数据库
+func DialRedis() redis.Conn {
+	redisconnect := "127.0.0.1:6379"
+	redispassword := "123456"
+	redis.DialConnectTimeout(time.Duration(10))
+	option := new(redis.DialOption)
+
+	c, err := redis.Dial("tcp", redisconnect, redis.DialPassword(redispassword), *option)
+	if err != redis.ErrNil {
+		log.Print("Connect to redis error", err)
+		return nil
+	}
+	return c
 }
 
 func Register(c *gin.Context) {
@@ -120,11 +138,20 @@ func Register(c *gin.Context) {
 	}
 
 	//返回token
-	token := "还没做完"
+	id := QueryIdByUsername(username)
+	token, err := NewUserSession(id)
+	if err != redis.ErrNil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": "501",
+			"msg":  "操作超时",
+		})
+		return
+	}
+
+	c.SetCookie("session", token, 24*60*60, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
-		"code":  "200",
-		"msg":   "注册成功",
-		"token": token,
+		"code": "200",
+		"msg":  "注册成功",
 	})
 }
 
@@ -152,6 +179,28 @@ func Login(c *gin.Context) {
 	//读取用户名/邮箱
 	username, usernameExist := c.GetPostForm("username")
 	email, exist2 := c.GetPostForm("email")
+	cookiRequset := c.Request.Cookies()
+
+	for i := 0; i < len(cookiRequset); i++ {
+		item := cookiRequset[i]
+		//
+		isLogged, err := VerifyUserSession(item.Value)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": "500",
+				"msg":  "未知错误",
+			})
+			return
+		}
+		if isLogged {
+			c.JSON(http.StatusOK, gin.H{
+				"code": "208",
+				"msg":  "已登录",
+			})
+			return
+		}
+	}
+
 	if !usernameExist && !exist2 || email == "" && username == "" {
 		c.JSON(http.StatusOK, gin.H{
 			"code": "305",
@@ -204,12 +253,52 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+
 	//返回token
-	token := ""
+	id := QueryIdByUsername(username)
+	token, err := NewUserSession(id)
+	if err != redis.ErrNil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": "501",
+			"msg":  "操作超时",
+		})
+		return
+	}
+
+	c.SetCookie("session", token, 24*60*60, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"code":  "200",
 		"msg":   "登录成功",
 		"token": token,
+	})
+}
+
+func ExitLogin(c *gin.Context) {
+	cookiRequset := c.Request.Cookies()
+
+	for i := 0; i < len(cookiRequset); i++ {
+		item := cookiRequset[i]
+		//
+		isLogged, err := VerifyUserSession(item.Value)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": "500",
+				"msg":  "未知错误",
+			})
+			return
+		}
+		if isLogged {
+			ExpireSession(item.Value)
+			c.JSON(http.StatusOK, gin.H{
+				"code": "200",
+				"msg":  "已退出登录",
+			})
+			return
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": "201",
+		"msg":  "未登录",
 	})
 }
 
