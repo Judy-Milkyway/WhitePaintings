@@ -21,8 +21,10 @@ func main() {
 	passportPage := r.Group("/")
 
 	passportPage.POST("/login", passportv2.Login)
-	passportPage.POST("/register", passportv2.Register)
 	passportPage.DELETE("/login", passportv2.ExitLogin)
+	passportPage.GET("/login", passportv2.CheckLogin)
+	passportPage.POST("/register", passportv2.Register)
+
 	//
 
 	//运行数据库
