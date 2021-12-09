@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 	"time"
 
 	"github.com/garyburd/redigo/redis"
@@ -136,11 +137,16 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
+
+	idnum, _ := strconv.Atoi(id)
+	idnum++
+	id = strconv.Itoa(idnum)
+
 	token, err := NewUserSession(id)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"code": "501",
-			"msg":  "操作超时",
+			"code": "500",
+			"msg":  "未知错误",
 		})
 
 		return
@@ -265,7 +271,7 @@ func Login(c *gin.Context) {
 	//返回token
 	id := QueryIdByUsername(username)
 	token, err := NewUserSession(id)
-	if err != redis.ErrNil {
+	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": "500",
 			"msg":  "未知错误",
@@ -324,6 +330,7 @@ func ExitLogin(c *gin.Context) {
 		}
 		if isLogged {
 			ExpireSession(item.Value)
+			c.SetCookie("session", "Shimin Li", -1, "/", "localhost", false, true)
 			c.JSON(http.StatusOK, gin.H{
 				"code": "200",
 				"msg":  "已退出登录",
