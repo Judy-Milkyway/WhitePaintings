@@ -8,7 +8,7 @@ import (
 )
 
 //上传图像文件，POST请求
-func UploadUserAvatar(c *gin.Context) {
+func UploadProfilePicture(c *gin.Context) {
 	//单张图片上传
 	file, _ := c.FormFile("file")
 	name := c.PostForm("user_id")
@@ -30,4 +30,4 @@ func UploadUserAvatar(c *gin.Context) {
 }
 
 //使用默认头像,GET请求
-func UseDefaultAvatar(c *gin.Context)
+func UseDefaultProfilePicture(c *gin.Context)

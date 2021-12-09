@@ -162,7 +162,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("session", token, 24*60*60, "/", "localhost", false, true)
+	c.SetCookie(username, token, 24*60*60, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"code": "200",
 		"msg":  "注册成功",
@@ -198,7 +198,7 @@ func Login(c *gin.Context) {
 	for i := 0; i < len(cookiRequset); i++ {
 		item := cookiRequset[i]
 		//
-		isLogged, err := VerifyUserSession(item.Value)
+		isLogged, err := VerifyUserSession(item.Name, item.Value)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": "500",
@@ -269,8 +269,7 @@ func Login(c *gin.Context) {
 	}
 
 	//返回token
-	id := QueryIdByUsername(username)
-	token, err := NewUserSession(id)
+	token, err := NewUserSession(username)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": "500",
@@ -279,7 +278,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("session", token, 24*60*60, "/", "localhost", false, true)
+	c.SetCookie(username, token, 24*60*60, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"code": "200",
 		"msg":  "登录成功",
@@ -291,7 +290,7 @@ func CheckLogin(c *gin.Context) {
 	for i := 0; i < len(cookiRequset); i++ {
 		item := cookiRequset[i]
 		//
-		isLogged, err := VerifyUserSession(item.Value)
+		isLogged, err := VerifyUserSession(item.Name, item.Value)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": "500",
@@ -320,7 +319,7 @@ func ExitLogin(c *gin.Context) {
 	for i := 0; i < len(cookiRequset); i++ {
 		item := cookiRequset[i]
 		//
-		isLogged, err := VerifyUserSession(item.Value)
+		isLogged, err := VerifyUserSession(item.Name, item.Value)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": "500",

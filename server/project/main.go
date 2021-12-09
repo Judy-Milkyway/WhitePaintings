@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"main.go/passportv2"
-	"main.go/userdata.go"
+	"main.go/userdata"
 )
 
 func main() {
@@ -31,6 +31,7 @@ func main() {
 	passportPage.GET("/login", passportv2.CheckLogin)
 	passportPage.POST("/register", passportv2.Register)
 
+	userinfoapi.Use(VerifyToken)
 	//用户信息页面api
 	usertables := userinfoapi.Group("/userinfo")
 	//修改用户头像
@@ -71,6 +72,33 @@ func Cors() gin.HandlerFunc {
 	}
 }
 
+//需要登录的操作的验证中间件
 func VerifyToken(c *gin.Context) {
+	cookies := c.Request.Cookies()
 
+	for i := 0; i < len(cookies); i++ {
+		item := cookies[i]
+		token, err := passportv2.VerifyUserSession(item.Value)
+		if err != nil {
+			log.Print("main.go" + err.Error())
+		}
+
+		if token {
+			c.Next()
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": "404",
+		"msg":  "请求的资源不可用",
+	})
+
+	c.Abort()
+
+	defer func() {
+		if err := recover(); err != nil {
+			log.Printf("Panic info is: %v", err)
+		}
+	}()
+	c.Next()
 }
