@@ -9,7 +9,7 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
-func NewUserSession(id string) (string, error) {
+func NewUserSession(username string) (string, error) {
 
 	c, err := DialRedis()
 	if err != nil {
@@ -20,7 +20,7 @@ func NewUserSession(id string) (string, error) {
 	session := tsgutils.GUID()
 	expireTime := 24 * 60 * 60
 
-	_, err = c.Do("SET", session, id, "EX", expireTime)
+	_, err = c.Do("SET", username, session, "EX", expireTime)
 	if err != nil {
 		log.Print("redis set failed:", err)
 	}
@@ -28,7 +28,7 @@ func NewUserSession(id string) (string, error) {
 	return session, nil
 }
 
-func VerifyUserSession(session string) (bool, error) {
+func VerifyUserSession(username string, session string) (bool, error) {
 
 	c, err := DialRedis()
 	if err != nil {
@@ -36,19 +36,19 @@ func VerifyUserSession(session string) (bool, error) {
 	}
 	defer c.Close()
 
-	exist, err := redis.Bool(c.Do("EXISTS", session))
+	value, err := redis.String(c.Do("GET", username))
 	if err != nil {
 		log.Print("redis query failed:", err)
 		return false, err
 	}
 
-	if exist {
+	if value == session {
 		return true, nil
 	}
 	return false, nil
 }
 
-func ResetSessionTime(session string) error {
+func ResetSessionTime(username string) error {
 
 	c, err := DialRedis()
 	if err != nil {
@@ -56,7 +56,7 @@ func ResetSessionTime(session string) error {
 	}
 	defer c.Close()
 
-	n, err := c.Do("EXPIRE", session, 24*60*60)
+	n, err := c.Do("EXPIRE", username, 24*60*60)
 	if n == int64(1) {
 		fmt.Print("success")
 		return nil
