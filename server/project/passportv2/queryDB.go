@@ -1,7 +1,6 @@
 package passportv2
 
 import (
-	"database/sql"
 	"log"
 )
 
@@ -100,7 +99,7 @@ func QueryIdByUsername(username string) string {
 	result := db.QueryRow(sqlstr, username)
 	err := result.Scan(&id)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == nil {
 			return ""
 		}
 		log.Print(err)

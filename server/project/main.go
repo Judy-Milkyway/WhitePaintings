@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"main.go/passportv2"
+	"main.go/userdata.go"
 )
 
 func main() {
@@ -14,22 +15,26 @@ func main() {
 		print("\n" + err.Error() + "\n")
 	}
 
-	r := gin.Default()
+	passportapi := gin.Default()
+	defer passportapi.Run(":9000")
 
-	r.Use(Cors())
+	userinfoapi := gin.Default()
+	userinfoapi.MaxMultipartMemory = 8 << 20 //设置文件最大为8mb
+	defer userinfoapi.Run(":9000")
+
+	passportapi.Use(Cors())
 	//登录页面
-	passportPage := r.Group("/")
+	passportPage := passportapi.Group("/passport")
 
 	passportPage.POST("/login", passportv2.Login)
 	passportPage.DELETE("/login", passportv2.ExitLogin)
 	passportPage.GET("/login", passportv2.CheckLogin)
 	passportPage.POST("/register", passportv2.Register)
 
-	//
-
-	//运行数据库
-	r.Run(":9000")
-
+	//用户信息页面api
+	usertables := userinfoapi.Group("/userinfo")
+	//修改用户头像
+	usertables.POST("/Avatar", userdata.UploadUserAvatar)
 }
 
 //跨域请求
@@ -64,4 +69,8 @@ func Cors() gin.HandlerFunc {
 		}()
 		c.Next()
 	}
+}
+
+func VerifyToken(c *gin.Context) {
+
 }

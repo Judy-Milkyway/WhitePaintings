@@ -20,7 +20,7 @@ func NewUserSession(id string) (string, error) {
 	session := tsgutils.GUID()
 	expireTime := 24 * 60 * 60
 
-	_, err = c.Do("SET", "session", id, "EX", expireTime)
+	_, err = c.Do("SET", session, id, "EX", expireTime)
 	if err != nil {
 		log.Print("redis set failed:", err)
 	}
@@ -36,7 +36,7 @@ func VerifyUserSession(session string) (bool, error) {
 	}
 	defer c.Close()
 
-	exist, err := redis.Bool(c.Do("EXISTS", "session"))
+	exist, err := redis.Bool(c.Do("EXISTS", session))
 	if err != nil {
 		log.Print("redis query failed:", err)
 		return false, err
