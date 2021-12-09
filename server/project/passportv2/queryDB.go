@@ -1,6 +1,9 @@
 package passportv2
 
-import "log"
+import (
+	"database/sql"
+	"log"
+)
 
 //从数据库查询电子邮件
 func QueryEmail(username string) string {
@@ -80,7 +83,7 @@ func QueryPasswd(username string) []byte {
 //通过邮箱查询用户id
 func QueryIdByEmail(email string) string {
 	var id string
-	sqlstr := `select user_id from users where email=?`
+	sqlstr := `select data_id from users where email=?`
 	result := db.QueryRow(sqlstr, email)
 	err := result.Scan(&id)
 	if err != nil {
@@ -93,10 +96,13 @@ func QueryIdByEmail(email string) string {
 //通过用户名查询用户id
 func QueryIdByUsername(username string) string {
 	var id string
-	sqlstr := `select user_id from users where email=?`
+	sqlstr := `select data_id from users where email=?`
 	result := db.QueryRow(sqlstr, username)
 	err := result.Scan(&id)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return ""
+		}
 		log.Print(err)
 		return ""
 	}
@@ -114,4 +120,16 @@ func QuerySalt(username string) []byte {
 		return nil
 	}
 	return salt
+}
+
+func QueryLastID() (string, error) {
+	id := ""
+	sqlstr := `SELECT IF(MAX(id) IS NULL, 0, MIN(id)) AS minid FROM users;`
+	result := db.QueryRow(sqlstr)
+	err := result.Scan(&id)
+	if err != nil {
+		log.Print(err)
+		return "", err
+	}
+	return id, nil
 }

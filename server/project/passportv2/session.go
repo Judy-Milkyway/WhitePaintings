@@ -11,12 +11,16 @@ import (
 
 func NewUserSession(id string) (string, error) {
 
-	c := DialRedis()
+	c, err := DialRedis()
+	if err != nil {
+		return "", err
+	}
 	defer c.Close()
+
 	session := tsgutils.GUID()
 	expireTime := 24 * 60 * 60
 
-	_, err := c.Do("SET", "mykey", id, "EX", expireTime)
+	_, err = c.Do("SET", "session", id, "EX", expireTime)
 	if err != nil {
 		log.Print("redis set failed:", err)
 	}
@@ -26,9 +30,13 @@ func NewUserSession(id string) (string, error) {
 
 func VerifyUserSession(session string) (bool, error) {
 
-	c := DialRedis()
+	c, err := DialRedis()
+	if err != nil {
+		return false, err
+	}
 	defer c.Close()
-	exist, err := redis.Bool(c.Do("EXISTS", "mykey1"))
+
+	exist, err := redis.Bool(c.Do("EXISTS", "session"))
 	if err != nil {
 		log.Print("redis query failed:", err)
 		return false, err
@@ -42,8 +50,12 @@ func VerifyUserSession(session string) (bool, error) {
 
 func ResetSessionTime(session string) error {
 
-	c := DialRedis()
+	c, err := DialRedis()
+	if err != nil {
+		return err
+	}
 	defer c.Close()
+
 	n, err := c.Do("EXPIRE", session, 24*60*60)
 	if n == int64(1) {
 		fmt.Print("success")
@@ -55,8 +67,12 @@ func ResetSessionTime(session string) error {
 //暂时的方案
 func ExpireSession(session string) error {
 
-	c := DialRedis()
+	c, err := DialRedis()
+	if err != nil {
+		return err
+	}
 	defer c.Close()
+
 	n, err := c.Do("EXPIRE", session, 0.01)
 	if n == int64(1) {
 		fmt.Print("success")

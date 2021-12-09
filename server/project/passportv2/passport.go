@@ -45,18 +45,18 @@ func InitDB() error {
 }
 
 //连接redis数据库
-func DialRedis() redis.Conn {
+func DialRedis() (redis.Conn, error) {
 	redisconnect := "127.0.0.1:6379"
-	redispassword := "123456"
+	//redispassword := "123456"
 	redis.DialConnectTimeout(time.Duration(10))
-	option := new(redis.DialOption)
+	//option := new(redis.DialOption)
 
-	c, err := redis.Dial("tcp", redisconnect, redis.DialPassword(redispassword), *option)
-	if err != redis.ErrNil {
+	c, err := redis.Dial("tcp", redisconnect /*, redis.DialPassword(redispassword), *option*/)
+	if err != nil {
 		log.Print("Connect to redis error", err)
-		return nil
+		return nil, err
 	}
-	return c
+	return c, nil
 }
 
 func Register(c *gin.Context) {
@@ -127,24 +127,32 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	err := AddUser(username, password, email)
+	//返回token
+	id, err := QueryLastID()
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": "501",
+			"msg":  "操作超时",
+		})
+		return
+	}
+	token, err := NewUserSession(id)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": "501",
+			"msg":  "操作超时",
+		})
+
+		return
+	}
+
+	err = AddUser(username, password, email)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": "500",
 			"msg":  "未知错误",
 		})
 		log.Print(err)
-		return
-	}
-
-	//返回token
-	id := QueryIdByUsername(username)
-	token, err := NewUserSession(id)
-	if err != redis.ErrNil {
-		c.JSON(http.StatusOK, gin.H{
-			"code": "501",
-			"msg":  "操作超时",
-		})
 		return
 	}
 
@@ -267,9 +275,8 @@ func Login(c *gin.Context) {
 
 	c.SetCookie("session", token, 24*60*60, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
-		"code":  "200",
-		"msg":   "登录成功",
-		"token": token,
+		"code": "200",
+		"msg":  "登录成功",
 	})
 }
 
@@ -294,11 +301,11 @@ func CheckLogin(c *gin.Context) {
 			})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"code": "201",
-			"msg":  "未登录",
-		})
 	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": "201",
+		"msg":  "未登录",
+	})
 }
 
 func ExitLogin(c *gin.Context) {
