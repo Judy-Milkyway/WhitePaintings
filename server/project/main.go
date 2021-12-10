@@ -91,6 +91,8 @@ func VerifyToken() gin.HandlerFunc {
 			}
 
 			if token {
+				c.Set("username", item.Name)
+				c.Set("token", item.Value)
 				c.Next()
 			}
 		}

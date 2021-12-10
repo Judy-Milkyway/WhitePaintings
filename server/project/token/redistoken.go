@@ -21,7 +21,7 @@ func init() {
 				return nil, err
 			}
 			// 选择db
-			c.Do("SELECT", "token")
+			//c.Do("SELECT", "token")
 			return c, nil
 		},
 	}
@@ -87,4 +87,28 @@ func ResetExpireTime(key string, time string) error {
 		return err
 	}
 	return nil
+}
+
+//新建一个标记，值为对应的值,默认一小时后过期
+func NewTokenFromTokenValue(key string, value string) error {
+	c := conn.Get()
+	defer c.Close()
+
+	c.Do("set", key, value)
+	c.Do("EXPIRE", key, 60*60)
+	return nil
+}
+
+//得到某个token键对应的值
+func GetValueFromTokenKey(key string) (string, error) {
+	c := conn.Get()
+	str, err := redis.String(c.Do("GET", key))
+	if err != nil {
+		if err == redis.ErrNil {
+			return "", nil
+		}
+		log.Print("Token" + err.Error())
+		return "", err
+	}
+	return str, nil
 }

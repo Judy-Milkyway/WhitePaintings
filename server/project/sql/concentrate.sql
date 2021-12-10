@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS `concentrate`(
+    `data_id` INT UNSIGNED AUTO_INCREMENT,
+    `timesub` TIME NOT NULL,
+    PRIMARY KEY (`data_id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

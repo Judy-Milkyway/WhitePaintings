@@ -35,6 +35,6 @@ func UseDefaultProfilePicture(c *gin.Context) {
 }
 
 //读取用户头像
-func ReadUserProfilePicture(id string) {
+func ReadUserProfilePicture(c *gin.Context) {
 
 }

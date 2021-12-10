@@ -121,6 +121,22 @@ func QuerySalt(username string) []byte {
 	return salt
 }
 
+//通过id查询用户名
+func QueryUsernameById(id string) string {
+	var username string
+	sqlstr := `select username from users where data_id=?`
+	result := db.QueryRow(sqlstr, id)
+	err := result.Scan(&username)
+	if err != nil {
+		if err == nil {
+			return ""
+		}
+		log.Print(err)
+		return ""
+	}
+	return username
+}
+
 func QueryLastID() (string, error) {
 	id := ""
 	sqlstr := `select MAX(data_id) from users;`
