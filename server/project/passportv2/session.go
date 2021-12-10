@@ -38,6 +38,10 @@ func VerifyUserSession(username string, session string) (bool, error) {
 
 	value, err := redis.String(c.Do("GET", username))
 	if err != nil {
+		//如果错误是没有查询到值，错误返回nil
+		if err == redis.ErrNil {
+			return false, nil
+		}
 		log.Print("redis query failed:", err)
 		return false, err
 	}
@@ -65,7 +69,7 @@ func ResetSessionTime(username string) error {
 }
 
 //暂时的方案
-func ExpireSession(session string) error {
+func ExpireSession(username string) error {
 
 	c, err := DialRedis()
 	if err != nil {
@@ -73,7 +77,7 @@ func ExpireSession(session string) error {
 	}
 	defer c.Close()
 
-	n, err := c.Do("EXPIRE", session, 0.01)
+	n, err := c.Do("EXPIRE", username, 0.01)
 	if n == int64(1) {
 		fmt.Print("success")
 		return nil

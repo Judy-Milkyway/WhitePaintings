@@ -30,4 +30,11 @@ func UploadProfilePicture(c *gin.Context) {
 }
 
 //使用默认头像,GET请求
-func UseDefaultProfilePicture(c *gin.Context)
+func UseDefaultProfilePicture(c *gin.Context) {
+
+}
+
+//读取用户头像
+func ReadUserProfilePicture(id string) {
+
+}

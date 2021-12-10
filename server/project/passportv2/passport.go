@@ -9,7 +9,8 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"strconv"
+
+	//"strconv"
 	"time"
 
 	"github.com/garyburd/redigo/redis"
@@ -23,6 +24,7 @@ import (
 
 //初始化sql数据库
 var db *sql.DB
+var website = "localhost"
 
 func InitDB() error {
 	var err error
@@ -129,20 +131,8 @@ func Register(c *gin.Context) {
 	}
 
 	//返回token
-	id, err := QueryLastID()
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"code": "501",
-			"msg":  "操作超时",
-		})
-		return
-	}
 
-	idnum, _ := strconv.Atoi(id)
-	idnum++
-	id = strconv.Itoa(idnum)
-
-	token, err := NewUserSession(id)
+	token, err := NewUserSession(username)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": "500",
@@ -162,7 +152,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie(username, token, 24*60*60, "/", "localhost", false, true)
+	c.SetCookie(username, token, 24*60*60, "/", website, false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"code": "200",
 		"msg":  "注册成功",
@@ -278,7 +268,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie(username, token, 24*60*60, "/", "localhost", false, true)
+	c.SetCookie(username, token, 24*60*60, "/", website, false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"code": "200",
 		"msg":  "登录成功",
@@ -299,7 +289,7 @@ func CheckLogin(c *gin.Context) {
 			return
 		}
 		if isLogged {
-			ExpireSession(item.Value)
+			//ExpireSession(item.Value)
 			c.JSON(http.StatusOK, gin.H{
 				"code": "200",
 				"msg":  "已登录",
@@ -328,8 +318,8 @@ func ExitLogin(c *gin.Context) {
 			return
 		}
 		if isLogged {
-			ExpireSession(item.Value)
-			c.SetCookie("session", "Shimin Li", -1, "/", "localhost", false, true)
+			ExpireSession(item.Name)
+			c.SetCookie(item.Name, "Shimin Li", 1, "/", website, false, true)
 			c.JSON(http.StatusOK, gin.H{
 				"code": "200",
 				"msg":  "已退出登录",

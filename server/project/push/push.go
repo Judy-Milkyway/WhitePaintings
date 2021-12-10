@@ -10,9 +10,9 @@ import (
 
 var db *sql.DB
 
-func PushInspiritWords(c gin.Context) {
+func PushInspiritWords(c *gin.Context) {
 	id := c.Query("id")
-	sqlstr := `setect * from inspire_context where id=?`
+	sqlstr := `setect * from words where data_id=?`
 	word := ""
 
 	err := db.QueryRow(sqlstr, id).Scan(&word)

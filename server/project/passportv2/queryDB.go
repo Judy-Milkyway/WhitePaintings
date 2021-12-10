@@ -82,7 +82,7 @@ func QueryPasswd(username string) []byte {
 //通过邮箱查询用户id
 func QueryIdByEmail(email string) string {
 	var id string
-	sqlstr := `select id from users where email=?`
+	sqlstr := `select data_id from users where email=?`
 	result := db.QueryRow(sqlstr, email)
 	err := result.Scan(&id)
 	if err != nil {
@@ -123,7 +123,7 @@ func QuerySalt(username string) []byte {
 
 func QueryLastID() (string, error) {
 	id := ""
-	sqlstr := `select MAX(users_id) from users;`
+	sqlstr := `select MAX(data_id) from users;`
 	result := db.QueryRow(sqlstr)
 	err := result.Scan(&id)
 	if err != nil {

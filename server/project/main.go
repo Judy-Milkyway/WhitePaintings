@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"main.go/passportv2"
+	"main.go/push"
 	"main.go/userdata"
 )
 
@@ -15,27 +16,32 @@ func main() {
 		print("\n" + err.Error() + "\n")
 	}
 
-	passportapi := gin.Default()
-	defer passportapi.Run(":9000")
+	main := gin.Default()
+	main.MaxMultipartMemory = 8 << 20 //设置文件最大为8mb
+	defer main.Run(":9000")
 
-	userinfoapi := gin.Default()
-	userinfoapi.MaxMultipartMemory = 8 << 20 //设置文件最大为8mb
-	defer userinfoapi.Run(":9000")
+	main.Use(Cors())
 
-	passportapi.Use(Cors())
+	main.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"code": "404",
+			"msg":  "请求的资源未找到",
+		})
+	})
 	//登录页面
-	passportPage := passportapi.Group("/passport")
+	passportPage := main.Group("/passport")
 
 	passportPage.POST("/login", passportv2.Login)
 	passportPage.DELETE("/login", passportv2.ExitLogin)
 	passportPage.GET("/login", passportv2.CheckLogin)
 	passportPage.POST("/register", passportv2.Register)
 
-	userinfoapi.Use(VerifyToken)
 	//用户信息页面api
-	usertables := userinfoapi.Group("/userinfo")
+	usertables := main.Group("/userinfo")
+	usertables.Use(VerifyToken())
 	//修改用户头像
-	usertables.POST("/Avatar", userdata.UploadUserAvatar)
+	usertables.POST("/profileimage", userdata.UploadProfilePicture)
+	usertables.GET("/push", push.PushInspiritWords)
 }
 
 //跨域请求
@@ -73,32 +79,32 @@ func Cors() gin.HandlerFunc {
 }
 
 //需要登录的操作的验证中间件
-func VerifyToken(c *gin.Context) {
-	cookies := c.Request.Cookies()
+func VerifyToken() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		cookies := c.Request.Cookies()
 
-	for i := 0; i < len(cookies); i++ {
-		item := cookies[i]
-		token, err := passportv2.VerifyUserSession(item.Value)
-		if err != nil {
-			log.Print("main.go" + err.Error())
+		for i := 0; i < len(cookies); i++ {
+			item := cookies[i]
+			token, err := passportv2.VerifyUserSession(item.Name, item.Value)
+			if err != nil {
+				log.Print("main.go" + err.Error())
+			}
+
+			if token {
+				c.Next()
+			}
 		}
 
-		if token {
-			c.Next()
-		}
+		c.JSON(http.StatusNotFound, gin.H{
+			"code": "404",
+			"msg":  "请求的资源不可用",
+		})
+
+		c.Abort()
+		defer func() {
+			if err := recover(); err != nil {
+				log.Printf("Panic info is: %v", err)
+			}
+		}()
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": "404",
-		"msg":  "请求的资源不可用",
-	})
-
-	c.Abort()
-
-	defer func() {
-		if err := recover(); err != nil {
-			log.Printf("Panic info is: %v", err)
-		}
-	}()
-	c.Next()
 }
