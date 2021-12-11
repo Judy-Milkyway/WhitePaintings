@@ -69,9 +69,10 @@ func GetMessage(c *gin.Context) {
 		return
 	}
 
-	// for i := 0; i < len(data); i++ {
-	// 	data[i].username = passportv2.QueryUsernameById(data[i].user_id)
-	// }
+	for i := 0; i < len(data); i++ {
+		data[i].username = passportv2.QueryUsernameById(data[i].user_id)
+		data[i].user_id = "0"
+	}
 
 	response, err := json.Marshal(data)
 	if err != nil && response == nil {
@@ -110,6 +111,19 @@ func PostMessage(c *gin.Context) {
 	data.user_id = userid
 	data.content = content
 	data.picUrl = pic_url
+
+	err := AddCommuityInfo(*data)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": "500",
+			"msg":  "未知错误",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": "200",
+		"msg":  "添加成功",
+	})
 }
 
 func Strval(value interface{}) string {

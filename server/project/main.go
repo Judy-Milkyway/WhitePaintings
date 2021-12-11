@@ -16,6 +16,11 @@ func main() {
 		print("\n" + err.Error() + "\n")
 	}
 
+	err = push.InitDB()
+	if err != nil {
+		print("\n" + err.Error() + "\n")
+	}
+
 	main := gin.Default()
 	main.MaxMultipartMemory = 8 << 20 //设置文件最大为8mb
 	defer main.Run(":9000")
@@ -83,6 +88,8 @@ func VerifyToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cookies := c.Request.Cookies()
 
+		access := false
+
 		for i := 0; i < len(cookies); i++ {
 			item := cookies[i]
 			token, err := passportv2.VerifyUserSession(item.Name, item.Value)
@@ -91,10 +98,15 @@ func VerifyToken() gin.HandlerFunc {
 			}
 
 			if token {
+				access = true
 				c.Set("username", item.Name)
 				c.Set("token", item.Value)
 				c.Next()
 			}
+		}
+
+		if access {
+			return
 		}
 
 		c.JSON(http.StatusNotFound, gin.H{

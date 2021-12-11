@@ -1,18 +1,16 @@
 package push
 
 import (
-	"database/sql"
+	//"database/sql"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-var db *sql.DB
-
 func PushInspiritWords(c *gin.Context) {
 	id := c.Query("id")
-	sqlstr := `setect * from words where data_id=?`
+	sqlstr := `select content from words where data_id=?`
 	word := ""
 
 	err := db.QueryRow(sqlstr, id).Scan(&word)
@@ -22,6 +20,7 @@ func PushInspiritWords(c *gin.Context) {
 			"code": "500",
 			"msg":  "获取失败",
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
