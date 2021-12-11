@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS `concentrate`(
     `data_id` INT UNSIGNED AUTO_INCREMENT,
+    `session_id` VARCHAR(32) NOT NULL,
     `user_id` INT,
     `timestart` DATETIME NOT NULL,
     `timesub` DATETIME NOT NULL,

@@ -34,7 +34,7 @@ func InitDB() error {
 
 func RecodeConCentRecode(session string, startTime string, submitTime time.Time, username string) error {
 	userid := passportv2.QueryIdByUsername(username)
-	sqlstr := `SELECT data_id FROM concentrate Where user_id=?`
+	sqlstr := `SELECT data_id FROM concentrate Where session=?`
 	var dataId string
 	_ = db.QueryRow(sqlstr, userid).Scan(&dataId)
 	// if err != nil && err != sql.ErrNoRows {
@@ -42,11 +42,11 @@ func RecodeConCentRecode(session string, startTime string, submitTime time.Time,
 	// 	return err
 	// }
 
-	//如果存在记录
+	//如果不存在记录
 	if dataId == "" {
-		sqlstr = `INSERT concentrate(timestart,timesub,user_id) VALUE(?,?,?)`
+		sqlstr = `INSERT concentrate(timestart,timesub,session_id,user_id) VALUE(?,?,?,?)`
 		submitTimestr := submitTime.Format("2006-01-02 15:04:05")
-		_, err := db.Exec(sqlstr, startTime, submitTimestr, userid)
+		_, err := db.Exec(sqlstr, startTime, submitTimestr, session, userid)
 		if err != nil {
 			log.Print("concerterr" + err.Error())
 			return err

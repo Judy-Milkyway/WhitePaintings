@@ -76,7 +76,8 @@ func StartConsentraterRecord(c *gin.Context) {
 func StopConsentraterRecord(c *gin.Context) {
 	usernameInterface, _ := c.Get("username")
 	username := push.Strval(usernameInterface)
-	session := c.PostForm("session")
+	session := c.Query("session")
+
 	res, err := token.GetValueFromTokenKey(session)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
