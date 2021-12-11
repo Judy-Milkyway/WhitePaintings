@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 )
 
 var db *sql.DB
@@ -101,9 +102,14 @@ func QueryCommunity(pages int) (map[int]*CommunityInfo, error) {
 		log.Print(err)
 		return nil, err
 	}
-
+	timehere := ""
 	for results.Next() {
-		results.Scan(&data[i].SubmitTime)
+
+		results.Scan(&timehere)
+		data[i].SubmitTime, err = time.Parse("2006-01-02 15:04:05", timehere)
+		if err != nil {
+			log.Print("communityErr")
+		}
 		querydata[i] = &data[i]
 		i++
 	}
