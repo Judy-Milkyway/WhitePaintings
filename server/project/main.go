@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"main.go/passportv2"
 	"main.go/push"
+	"main.go/userdata"
 )
 
 func main() {
@@ -16,6 +17,11 @@ func main() {
 	}
 
 	err = push.InitDB()
+	if err != nil {
+		print("\n" + err.Error() + "\n")
+	}
+
+	err = userdata.InitDB()
 	if err != nil {
 		print("\n" + err.Error() + "\n")
 	}
@@ -47,6 +53,13 @@ func main() {
 	//usertables.POST("/profileimage", userdata.UploadProfilePicture)
 	//文字推送
 	usertables.GET("/push", push.PushInspiritWords)
+	//专注数据后台交互
+	//开始专注
+	usertables.POST("/focuson", userdata.StartConsentraterRecord)
+	//专注数据
+	usertables.PUT("/focuson", userdata.KeepConsentraterRecord)
+	//结束专注
+	usertables.DELETE("/focuson", userdata.StopConsentraterRecord)
 
 	//社区页面api
 	community := main.Group("/community")
