@@ -1,14 +1,25 @@
 CREATE TABLE IF NOT EXISTS `concentrate`(
     `data_id` INT UNSIGNED AUTO_INCREMENT,
-    `timesub` TIMESTAMP NOT NULL,
+    `user_id` INT,
+    `timestart` DATETIME NOT NULL,
+    `timesub` DATETIME NOT NULL,
     PRIMARY KEY (`data_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `commuity`(
+CREATE TABLE IF NOT EXISTS `community`(
     `data_id` INT UNSIGNED AUTO_INCREMENT,
     `user_id` INT NOT NULL,
-    `content` VARCHAR(192) NOT NULL,
-    `pic_url` VARCHAR(192) ,
+    `content` VARCHAR(384) NOT NULL,
+    `pic_url` VARCHAR(384) ,
     `submit_time`  DATETIME NOT NULL,
+    PRIMARY KEY (`data_id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `concentrate_plan`(
+    `data_id` INT UNSIGNED AUTO_INCREMENT,
+    `user_id` INT,
+    `subject` VARCHAR(32),
+    `timestart` DATETIME NOT NULL,
+    `timesub` DATETIME NOT NULL,
     PRIMARY KEY (`data_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

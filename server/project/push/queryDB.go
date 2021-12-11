@@ -30,39 +30,41 @@ func InitDB() error {
 }
 
 //查询项目内容
-func QueryCommuity(pages int) (map[int]*CommuityInfo, error) {
-	var id = 0
-	sqlstr := `select MAX(id) from commuity;`
+func QueryCommunity(pages int) (map[int]*CommunityInfo, error) {
+	/*var id = 0
+	sqlstr := `select MAX(data_id) from community;`
 	result := db.QueryRow(sqlstr)
 	err := result.Scan(&id)
 	if err != nil {
 		log.Print(err)
 		return nil, err
 	}
+	*/
+	queryidlast := 10 * pages
 
-	queryidlast := id - 10*pages
-
-	querydata := make(map[int]*CommuityInfo)
+	querydata := make(map[int]*CommunityInfo)
 	i := 0
-	data := CommuityInfo{}
-	sqlstr = `SELECT DISTINCT user_id FROM commuity ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+
+	sqlstr := `SELECT DISTINCT user_id FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
 	results, err := db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
 		return nil, err
 	}
-
+	var data [10]CommunityInfo
 	for results.Next() {
-		results.Scan(&data.user_id)
-		querydata[i] = &data
+
+		results.Scan(&data[i].User_id)
+		querydata[i] = &data[i]
 		i++
-		if data.user_id == "" {
-			return querydata, errNoMoreContents
+		if data[i].User_id == "" {
+			break
 		}
 	}
+	defer results.Close()
 
 	i = 0
-	sqlstr = `SELECT DISTINCT content FROM commuity ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	sqlstr = `SELECT DISTINCT content FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
 	results, err = db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
@@ -70,13 +72,14 @@ func QueryCommuity(pages int) (map[int]*CommuityInfo, error) {
 	}
 
 	for results.Next() {
-		results.Scan(&data.content)
-		querydata[i] = &data
+		results.Scan(&data[i].Content)
+		querydata[i] = &data[i]
 		i++
 	}
+	defer results.Close()
 
 	i = 0
-	sqlstr = `SELECT DISTINCT pic_url FROM commuity ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	sqlstr = `SELECT DISTINCT pic_url FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
 	results, err = db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
@@ -84,13 +87,14 @@ func QueryCommuity(pages int) (map[int]*CommuityInfo, error) {
 	}
 
 	for results.Next() {
-		results.Scan(&data.picUrl)
-		querydata[i] = &data
+		results.Scan(&data[i].PicUrl)
+		querydata[i] = &data[i]
 		i++
 	}
+	defer results.Close()
 
 	i = 0
-	sqlstr = `SELECT DISTINCT submit_time FROM commuity ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	sqlstr = `SELECT DISTINCT submit_time FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
 	results, err = db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
@@ -98,18 +102,20 @@ func QueryCommuity(pages int) (map[int]*CommuityInfo, error) {
 	}
 
 	for results.Next() {
-		results.Scan(&data.submitTime)
-		querydata[i] = &data
+		results.Scan(&data[i].SubmitTime)
+		querydata[i] = &data[i]
 		i++
 	}
+	defer results.Close()
+
 	return querydata, nil
 }
 
-func AddCommuityInfo(info CommuityInfo) error {
+func AddCommunityInfo(info CommunityInfo) error {
 	sqlstr := `insert into community(user_id,content,pic_url,submit_time) values(?,?,?,?)`
-	_, err := db.Exec(sqlstr, info.user_id, info.content, info.picUrl, info.submitTime)
+	_, err := db.Exec(sqlstr, info.User_id, info.Content, info.PicUrl, info.SubmitTime)
 	if err != nil {
-		log.Print("commuity add item failed" + err.Error())
+		log.Print("community add item failed" + err.Error())
 		return err
 	}
 	return nil
