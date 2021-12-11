@@ -45,7 +45,7 @@ func QueryCommunity(pages int) (map[int]*CommunityInfo, error) {
 	querydata := make(map[int]*CommunityInfo)
 	i := 0
 
-	sqlstr := `SELECT DISTINCT user_id FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	sqlstr := `SELECT user_id FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
 	results, err := db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
@@ -65,7 +65,7 @@ func QueryCommunity(pages int) (map[int]*CommunityInfo, error) {
 	defer results.Close()
 
 	i = 0
-	sqlstr = `SELECT DISTINCT content FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	sqlstr = `SELECT content FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
 	results, err = db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
@@ -80,7 +80,7 @@ func QueryCommunity(pages int) (map[int]*CommunityInfo, error) {
 	defer results.Close()
 
 	i = 0
-	sqlstr = `SELECT DISTINCT pic_url FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	sqlstr = `SELECT pic_url FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
 	results, err = db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
@@ -95,7 +95,7 @@ func QueryCommunity(pages int) (map[int]*CommunityInfo, error) {
 	defer results.Close()
 
 	i = 0
-	sqlstr = `SELECT DISTINCT submit_time FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	sqlstr = `SELECT submit_time FROM community ORDER BY data_id DESC LIMIT 10 OFFSET ?`
 	results, err = db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
