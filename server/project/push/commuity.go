@@ -97,7 +97,7 @@ func PostMessage(c *gin.Context) {
 	content := c.PostForm("content")
 	pic_url := c.PostForm("pic_url")
 
-	if content == "" || pic_url == "" || username == "" {
+	if content == "" || username == "" {
 		c.JSON(http.StatusOK, gin.H{
 			"code": "400",
 			"msg":  "输入数据错误",
