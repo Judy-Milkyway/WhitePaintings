@@ -56,10 +56,11 @@ func QueryCommunity(pages int) (map[int]*CommunityInfo, error) {
 
 		results.Scan(&data[i].User_id)
 		querydata[i] = &data[i]
-		i++
+
 		if data[i].User_id == "" {
 			break
 		}
+		i++
 	}
 	defer results.Close()
 
