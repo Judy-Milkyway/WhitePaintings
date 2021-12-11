@@ -91,7 +91,7 @@ func QueryCommuity(pages int) (map[int]*CommuityInfo, error) {
 	}
 
 	i = 0
-	sqlstr = `select time from commuity where id between ? and ?;`
+	sqlstr = `select submit_time from commuity where id between ? and ?;`
 	results, err = db.Query(sqlstr, queryidfirst, queryidlast)
 	if err != nil {
 		log.Print(err)
@@ -107,7 +107,7 @@ func QueryCommuity(pages int) (map[int]*CommuityInfo, error) {
 }
 
 func AddCommuityInfo(info CommuityInfo) error {
-	sqlstr := `insert into community(userid,content,pic_url,time) values(?,?,?,?)`
+	sqlstr := `insert into community(user_id,content,pic_url,submit_time) values(?,?,?,?)`
 	_, err := db.Exec(sqlstr, info.user_id, info.content, info.picUrl, info.submitTime)
 	if err != nil {
 		log.Print("commuity add item failed" + err.Error())

@@ -89,6 +89,7 @@ func GetMessage(c *gin.Context) {
 	})
 }
 
+//上传数据，使用POST请求
 func PostMessage(c *gin.Context) {
 	usernameInterface, _ := c.Get("username")
 	username := Strval(usernameInterface)

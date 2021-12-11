@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"main.go/passportv2"
 	"main.go/push"
-	"main.go/userdata"
 )
 
 func main() {
@@ -45,8 +44,17 @@ func main() {
 	usertables := main.Group("/userinfo")
 	usertables.Use(VerifyToken())
 	//修改用户头像
-	usertables.POST("/profileimage", userdata.UploadProfilePicture)
+	//usertables.POST("/profileimage", userdata.UploadProfilePicture)
+	//文字推送
 	usertables.GET("/push", push.PushInspiritWords)
+
+	//社区页面api
+	community := main.Group("/community")
+	community.Use(VerifyToken())
+	//获取社区消息
+	community.GET("/message", push.GetMessage)
+	//新建社区消息
+	community.POST("/message", push.PostMessage)
 }
 
 //跨域请求
