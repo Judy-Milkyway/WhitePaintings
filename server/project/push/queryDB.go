@@ -41,13 +41,12 @@ func QueryCommuity(pages int) (map[int]*CommuityInfo, error) {
 	}
 
 	queryidlast := id - 10*pages
-	queryidfirst := id - 10*(pages+1)
 
 	querydata := make(map[int]*CommuityInfo)
 	i := 0
 	data := CommuityInfo{}
-	sqlstr = `select user_id from commuity where id between ? and ?;`
-	results, err := db.Query(sqlstr, queryidfirst, queryidlast)
+	sqlstr = `SELECT DISTINCT user_id FROM commuity ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	results, err := db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
 		return nil, err
@@ -63,8 +62,8 @@ func QueryCommuity(pages int) (map[int]*CommuityInfo, error) {
 	}
 
 	i = 0
-	sqlstr = `select content from commuity where id between ? and ?;`
-	results, err = db.Query(sqlstr, queryidfirst, queryidlast)
+	sqlstr = `SELECT DISTINCT content FROM commuity ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	results, err = db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
 		return nil, err
@@ -77,8 +76,8 @@ func QueryCommuity(pages int) (map[int]*CommuityInfo, error) {
 	}
 
 	i = 0
-	sqlstr = `select pic_urls from commuity where id between ? and ?;`
-	results, err = db.Query(sqlstr, queryidfirst, queryidlast)
+	sqlstr = `SELECT DISTINCT pic_url FROM commuity ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	results, err = db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
 		return nil, err
@@ -91,8 +90,8 @@ func QueryCommuity(pages int) (map[int]*CommuityInfo, error) {
 	}
 
 	i = 0
-	sqlstr = `select submit_time from commuity where id between ? and ?;`
-	results, err = db.Query(sqlstr, queryidfirst, queryidlast)
+	sqlstr = `SELECT DISTINCT submit_time FROM commuity ORDER BY data_id DESC LIMIT 10 OFFSET ?`
+	results, err = db.Query(sqlstr, queryidlast)
 	if err != nil {
 		log.Print(err)
 		return nil, err
