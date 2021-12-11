@@ -11,16 +11,16 @@ import (
 	"main.go/token"
 )
 
-type CommuityInfo struct {
-	submitTime time.Time //递交时间
+type CommunityInfo struct {
+	SubmitTime time.Time //递交时间
 
-	user_id string //递交人id,使用id防止邮箱与用户名的更换
+	User_id string //递交人id,使用id防止邮箱与用户名的更换
 
-	username string //递交人用户
+	Username string //递交人用户
 
-	content string //内容
+	Content string //内容
 
-	picUrl string //包含的图片网址
+	PicUrl string //包含的图片网址
 }
 
 //获取服务器的消息
@@ -54,13 +54,20 @@ func GetMessage(c *gin.Context) {
 		})
 		return
 	}
-	pages += 1
-	token.NewTokenFromTokenValue(usertoken, strconv.Itoa(pages))
-	//如果输入了请求，那么过期时间就重新设置
-	token.ResetExpireTime(usertoken, "3600")
 
+	token.NewTokenFromTokenValue(usertoken, strconv.Itoa(pages))
+
+	exist := c.Query("reset")
+	//如果输入了请求，那么过期时间就重新设置
+	if exist == "1" {
+		pages = 0
+	} else {
+		pages += 1
+	}
+
+	token.ResetExpireTime(usertoken, "3600")
 	//开始信息的查询，一次返回10行
-	data, err := QueryCommuity(pages)
+	data, err := QueryCommunity(pages)
 	if err != nil && data == nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": "500",
@@ -70,8 +77,8 @@ func GetMessage(c *gin.Context) {
 	}
 
 	for i := 0; i < len(data); i++ {
-		data[i].username = passportv2.QueryUsernameById(data[i].user_id)
-		data[i].user_id = "0"
+		data[i].Username = passportv2.QueryUsernameById(data[i].User_id)
+		data[i].User_id = "0"
 	}
 
 	response, err := json.Marshal(data)
@@ -85,7 +92,7 @@ func GetMessage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    "200",
-		"content": string(response),
+		"content": response,
 	})
 }
 
@@ -108,12 +115,13 @@ func PostMessage(c *gin.Context) {
 	//为了确保数据与账号联系在一起，使用用户的id而不是用户名
 	userid := passportv2.QueryIdByUsername(username)
 
-	data := new(CommuityInfo)
-	data.user_id = userid
-	data.content = content
-	data.picUrl = pic_url
+	data := new(CommunityInfo)
+	data.SubmitTime = time.Now()
+	data.User_id = userid
+	data.Content = content
+	data.PicUrl = pic_url
 
-	err := AddCommuityInfo(*data)
+	err := AddCommunityInfo(*data)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": "500",
@@ -126,6 +134,8 @@ func PostMessage(c *gin.Context) {
 		"msg":  "添加成功",
 	})
 }
+
+//删除某条消息
 
 func Strval(value interface{}) string {
 	var key string
