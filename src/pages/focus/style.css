@@ -1,0 +1,52 @@
+.focusContainer {
+    width: 100vw;
+    height: 100vh;
+    background-color: #FAFAFA;
+}
+
+.todoTitle {
+    height: 155px;
+    background: rgba(239, 237, 228);
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+}
+
+.titleContent {
+    position: absolute;
+    bottom: 24px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 30px 0 37px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.titleContent span {
+    width: 144px;
+    height: 50px;
+    left: 37px;
+    top: 125px;
+    font-family: "PingFang SC";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 50px;
+    text-align: center;
+}
+
+.todoTitle .addIcon {
+    width: 36px;
+    height: 36px;
+    background: url("../../assets/add.png") no-repeat center;
+    background-size: 100% 100%;
+}
+
+main .todoItems {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 35px 22px 110px;
+}

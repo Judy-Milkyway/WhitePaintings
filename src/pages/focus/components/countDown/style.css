@@ -1,0 +1,52 @@
+#countDownTitle {
+    background-color: #F3F1EC;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    /* height: 150px; */
+    line-height: 50px;
+    padding-left: 40px;
+    padding-top: 45px;
+    padding-bottom: 24px;
+    /* margin-top: -45px; */
+}
+
+#countDownBox {
+    background-color: #fff;
+    width: 100vw;
+    height: 100vh;
+}
+
+#board {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding-top: 90px;
+}
+
+#countDownStop {
+    position: absolute;
+    right: 19px;
+    top: 79px;
+    border: none;
+}
+
+.finishBtn {
+    /* visibility: hidden; */
+    position: relative;
+    z-index: 9999;
+    top: 210px;
+    left: 87px;
+    background-color: #F6F0E0;
+    height: 51px;
+    width: 200px;
+    border: none;
+    border-radius: 15px;
+    font-family: "PingFang SC";
+    font-size: 23px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0.3799999952316284px;
+    text-align: center;
+}
