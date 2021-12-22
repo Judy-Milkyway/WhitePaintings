@@ -1,0 +1,351 @@
+.loginlogon {
+    width: 100vw;
+    height: 100vh;
+    background-color: #F7F6F3;
+}
+
+.paper {
+    width: 360px;
+    position: fixed;
+    bottom: -60px;
+    transform: translateX(26px);
+}
+
+.login>.title {
+    width: 259px;
+    height: 114px;
+    position: relative;
+    left: 55px;
+    top: 91px;
+    font-family: Cooper Black;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 48px;
+    line-height: 50px;
+    letter-spacing: -0.5px;
+    color: #CAA974;
+}
+
+.login>.title>span {
+    display: block;
+}
+
+.loginInput input,
+.logoninput input {
+    outline: none;
+}
+
+.loginInput>.titleusername {
+    position: absolute;
+    width: 71px;
+    height: 20px;
+    left: 55px;
+    top: 250px;
+    font-family: PingFang SC;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: -0.5px;
+    color: #000000;
+}
+
+.loginInput>.inputusername {
+    position: absolute;
+    width: 280px;
+    height: 48px;
+    left: 55px;
+    top: 291px;
+    background: #FFFFFF;
+    opacity: 0.91;
+    border: 1px solid #BEB9B1;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-family: PingFang SC;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 25px;
+    letter-spacing: 0.02em;
+    text-align: left;
+}
+
+.loginInput>.titlepassword {
+    position: absolute;
+    width: 48px;
+    height: 20px;
+    left: 57px;
+    top: 360px;
+    font-family: PingFang SC;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: -0.5px;
+    color: #000000;
+}
+
+.loginInput>.inputpassword {
+    position: absolute;
+    width: 280px;
+    height: 48px;
+    left: 55px;
+    top: 393px;
+    background: #FFFFFF;
+    border: 1px solid #BEB9B1;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-family: PingFang SC;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 25px;
+    letter-spacing: 0.02em;
+    text-align: left;
+}
+
+.loginBtn {
+    position: absolute;
+    width: 160px;
+    height: 51px;
+    left: 115px;
+    right: 115px;
+    top: 469px;
+    bottom: 0%;
+    background: #CAA974;
+    border-radius: 15px;
+    border: none;
+    font-family: PingFang SC;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 23px;
+    line-height: 24px;
+    text-align: center;
+    letter-spacing: 0.38px;
+    color: #000000;
+}
+
+.logonbox {
+    z-index: 999;
+    position: absolute;
+    width: 140px;
+    height: 20px;
+    left: 125px;
+    top: 549px;
+    font-family: PingFang SC;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: -0.5px;
+    color: #000000;
+}
+
+.logonbox a {
+    text-decoration: none;
+    color: black;
+}
+
+/* @font-face{
+    font-family: "bottomword" format('truetype');
+    src:url('./字体.ttf');
+} */
+.bottomword {
+    position: absolute;
+    width: 298px;
+    height: 107px;
+    left: 46px;
+    top: 667px;
+    z-index: 1;
+    /* font-family: bottomword; */
+    font-family: 'Gabriola';
+}
+
+/* 
+img {
+    width: 100px;
+} */
+
+.bottom {
+    position: relative;
+    width: 343.51px;
+    height: 211px;
+    left: 31px;
+    top: 504px;
+    /* position: absolute;
+    width: 343.51px;
+    height: 582.96px;
+    left: 23px;
+    top: 634px; */
+}
+
+.bottombox1 {
+    position: absolute;
+    width: 277px;
+    height: 519px;
+    left: 15px;
+    top: 80px;
+    background: #FFFFFF;
+    box-shadow: 2px -2px 20px rgba(0, 0, 0, 0.06);
+    transform: rotate(-1.91deg);
+    z-index: 2;
+}
+
+.bottombox2 {
+    position: absolute;
+    width: 277px;
+    height: 519px;
+    left: 15px;
+    top: 50px;
+    background: #FFFFFF;
+    box-shadow: 2px -2px 20px rgba(0, 0, 0, 0.06);
+    transform: rotate(2.71deg);
+    z-index: 1;
+}
+
+.bottombox3 {
+    position: absolute;
+    width: 277px;
+    height: 519px;
+    left: 50px;
+    top: 20px;
+    background: #FFFFFF;
+    box-shadow: 2px -2px 20px rgba(0, 0, 0, 0.06);
+    transform: rotate(4.69deg);
+}
+
+
+.logoninput>.titleusername {
+    position: absolute;
+    left: 58px;
+    top: 220px;
+    font-family: PingFang SC;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: -0.5px;
+    color: #000000;
+}
+
+.logoninput>.inputusername {
+    position: absolute;
+    width: 280px;
+    height: 48px;
+    left: 58px;
+    top: 251px;
+    background: #FFFFFF;
+    border: 1px solid #BEB9B1;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-family: PingFang SC;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 25px;
+    letter-spacing: 0.02em;
+    text-align: left;
+}
+
+.logoninput>.titleemail {
+    position: absolute;
+    left: 58px;
+    top: 310px;
+    font-family: PingFang SC;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: -0.5px;
+    color: #000000;
+}
+
+.logoninput>.inputemail {
+    position: absolute;
+    width: 280px;
+    height: 48px;
+    left: 58px;
+    top: 339px;
+    background: #FFFFFF;
+    border: 1px solid #BEB9B1;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-family: PingFang SC;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 25px;
+    letter-spacing: 0.02em;
+    text-align: left;
+}
+
+.logoninput>.titlepassword {
+    position: absolute;
+    left: 60px;
+    top: 397px;
+    font-family: PingFang SC;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: -0.5px;
+    color: #000000;
+}
+
+.logoninput>.inputpassword {
+    position: absolute;
+    width: 280px;
+    height: 48px;
+    left: 58px;
+    top: 427px;
+    background: #FFFFFF;
+    border: 1px solid #BEB9B1;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-family: PingFang SC;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 25px;
+    letter-spacing: 0.02em;
+    text-align: left;
+}
+
+.logonBtn {
+    position: absolute;
+    width: 160px;
+    height: 51px;
+    top: 512px;
+    left: 110px;
+    background: #CAA974;
+    border-radius: 15px;
+    border: none;
+}
+
+.loginbox {
+    z-index: 999;
+    position: absolute;
+    width: 140px;
+    height: 20px;
+    left: 125px;
+    top: 589px;
+    font-family: PingFang SC;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: -0.5px;
+    color: #000000;
+}
+
+.loginbox a {
+    text-decoration: none;
+    color: #000;
+}

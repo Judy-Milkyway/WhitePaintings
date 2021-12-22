@@ -1,7 +1,7 @@
 import React from 'react';
-import file from "../../images/file.png"
-import club from "../../images/club.png"
-import my from "../../images/my.png"
+import file from "../../assets/file.png"
+import club from "../../assets/club.png"
+import my from "../../assets/my.png"
 import "./style.css"
 import { Link } from 'react-router-dom';
 

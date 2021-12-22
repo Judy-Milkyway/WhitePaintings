@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Focus } from "./components/focus"
-import { User } from "./components/user"
-import { AddTodo } from "./components/addTodo"
-import CountDown from "./components/countDown"
-import { SystemMsg } from './components/systemMsg';
-import { Finish } from './components/finish';
-import Community from './components/Community/Community'
-import { UserChange } from './components/userChange';
-import Loginlogon from "./components/Loginlogon/Loginlogon"
-
+import { Focus } from "./pages/focus"
+import { User } from "./pages/user"
+import CountDown from "./pages/focus/components/countDown"
+import { SystemMsg } from './pages/user/components/systemMsg';
+import { Finish } from './pages/focus/components/finish';
+import Community from './pages/Community/Community'
+import { UserChange } from './pages/user/components/userChange';
+import Loginlogon from "./pages/Loginlogon/Loginlogon"
+import { myTotalShare } from './pages/user/components/myTotalShare';
 export const App = () => {
     return (
         <div>
@@ -19,15 +18,13 @@ export const App = () => {
                     <Route path="/focus" component={Focus} />
                     <Route path="/user" component={User} />
                     <Route path='/club' component={Community} />
-                    {/* <Route path="/additem" render={() => (<AddTodo onChange={handleChange} onClick={handleClick} value={inputValue} />)} /> */}
                     <Route path="/countdown" render={() => (<CountDown duration={1500} />)} />
                     <Route path='/message' component={SystemMsg} />
-                    {/* <Route path="/" component={ } /> */}
                     <Route path='/finish' component={Finish} />
                     <Route path='/userchange' component={UserChange} />
+                    <Route path='/mytotalshare' component={myTotalShare} />
                 </Switch>
             </Router>
         </div>
     )
 }
-// render={() => (<Focus todoList={todoList} />)}
